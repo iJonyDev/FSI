@@ -6,9 +6,9 @@ encabezado = ()
 
 
 def data_extractor():
-    global encabezado # Llamamos a la variable 'global encabezado' porque en esta función vamos a modificar la variable
+    global encabezado # Usar la variable global
 
-    with open("19_ucl_stats.csv","r",encoding="utf-8",) as archivo:
+    with open("/workspaces/FSI/TrabajoGrupo19/P1/EPD12_5_datascience_salaries.csv","r",encoding="utf-8",) as archivo:
         contenido = csv.reader(archivo, delimiter=",")
         # Asignamos la primera línea a la tupla "encabezado"
         encabezado = next(contenido)
@@ -48,12 +48,10 @@ def nuevo_registro():
 
 def tabla_diccionario():
     # Mostrar un formato de tabla con los tamaños de los campos fijos de la cabecera
-    print("{:<10} {:<26} {:<12} {:<10} {:<20} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<8} {:<8} {:<8} "
-          "{:<8}\n".format(*encabezado))
+    print("{:<6} {:<10} {:<18} {:<16} {:<26} {:<12} {:<16} {:<14} {:<20} {:<14} {:<18} {:<14}".format(*encabezado))
     # Mostrar un formato de tabla con los tamaños de los campos fijos del resto de filas
     for v in diccionario1.values():
-        print("{:<10} {:<26} {:<12} {:<10} {:<20} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<8} {:<8} {:<8} "
-              "{:<8}".format(*v))
+        print("{:<6} {:<10} {:<18} {:<16} {:<26} {:<12} {:<16} {:<14} {:<20} {:<14} {:<18} {:<14}".format(*v))
 
 
 def borrar_registro():
@@ -93,13 +91,13 @@ def busca_clave_mostrar_valor():
     # Mostrar datos de la tupla correspondiente al registro
     if reg in diccionario1.keys():
         d = diccionario1.get(reg) # Tomamos el valor del registro para mostrarlo en el mismo formato que el encabazado
-        print("{:<6} {:<26} {:<12} {:<10} {:<20} {:<10} {:<6} {:<10} {:<6} {:<10} {:<6} {:<10} {:<8} {:<6} {:<6} {:<6}".format(*encabezado))
-        print("{:<6} {:<26} {:<12} {:<10} {:<20} {:<10} {:<6} {:<10} {:<6} {:<10} {:<6} {:<10} {:<8} {:<6} {:<6} {:<6}".format(*d))
+        print("{:<6} {:<10} {:<18} {:<16} {:<26} {:<12} {:<16} {:<14} {:<20} {:<14} {:<18} {:<14}".format(*encabezado))
+        print("{:<6} {:<10} {:<18} {:<16} {:<26} {:<12} {:<16} {:<14} {:<20} {:<14} {:<18} {:<14}".format(*d))
     return reg  # Retornamos 'reg' para usarlo en como entrada en otra funcion
 
 
 def buscar_editar_mostrar():
-
+    global diccionario1  # Usar el diccionario global
     reg = (busca_clave_mostrar_valor())  # Llamada a la función que busca y muestra un registro si este existe.
     print("Desea editar el registro?")
     editar = str.upper(input("[S] para confirmar: "))
@@ -121,8 +119,8 @@ def buscar_editar_mostrar():
     diccionario1[reg] = nueva_tupla
     d = diccionario1.get(reg) # Tomamos el valor del nuevo registro para mostrarlo en el mismo formato que el encabezado
     print("\nEl registro " + str(nuevo_registro[0] + " ha sido modificado:\n"))
-    print("{:<6} {:<26} {:<12} {:<10} {:<20} {:<10} {:<6} {:<10} {:<6} {:<10} {:<6} {:<10} {:<8} {:<6} {:<6} {:<6}".format(*encabezado))
-    print("{:<6} {:<26} {:<12} {:<10} {:<20} {:<10} {:<6} {:<10} {:<6} {:<10} {:<6} {:<10} {:<8} {:<6} {:<6} {:<6}".format(*d))
+    print("{:<6} {:<10} {:<18} {:<16} {:<26} {:<12} {:<16} {:<14} {:<20} {:<14} {:<18} {:<14}".format(*encabezado))
+    print("{:<6} {:<10} {:<18} {:<16} {:<26} {:<12} {:<16} {:<14} {:<20} {:<14} {:<18} {:<14}".format(*d))
 
 
 def mostrar_opciones():
@@ -151,7 +149,7 @@ def menu_principal():
                 print("Buscar un registro por su clave y mostrar sus valores", end="\n\n")
                 busca_clave_mostrar_valor()
             case "3":
-                print("Buscar un registro por su clave, editarlo y mostrar sus valores", end="\n\n")
+                print("Buscar un registro por su clave, mostrar sus valores y editarlos", end="\n\n")
                 buscar_editar_mostrar()
             case "4":
                 print("Borrar un registro a partir de su clave", end="\n\n")

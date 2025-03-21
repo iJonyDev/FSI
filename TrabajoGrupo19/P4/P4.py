@@ -1,56 +1,76 @@
+import pandas as pd
 from functools import reduce
 
+# Cargar el dataset
+df = pd.read_csv('/workspaces/FSI/TrabajoGrupo19/P4/EPD12_5_datascience_salaries.csv')
+
+# Crear el diccionario directamente
 diccionario = {
-    "265": (265, "Erling Haaland", "NOR", "FW", "Manchester City", 22, 2000, 11, 11, 841, 9.3, 12, 1, 13, 11, 1),
-    "724": (724, "Piotr Zieliński", "POL", "MF", "Napoli", 28, 1994, 10, 8, 619, 6.9, 4, 2, 6, 2, 2),
-    "236": (236, "Olivier Giroud", "FRA", "FW", "Milan", 35, 1986, 12, 12, 932, 10.4, 5, 2, 7, 3, 2),
-    "378": (378, "Robert Lewandowski", "POL", "FW", "Barcelona", 33, 1988, 5, 5, 441, 4.9, 5, 0, 5, 5, 0),
-    "508": (508, "Victor Osimhen", "NGA", "FW", "Napoli", 23, 1998, 6, 5, 421, 4.7, 5, 0, 5, 5, 0),
-    "570": (570, "Rodrygo", "BRA", "FW", "Real Madrid", 21, 2001, 12, 10, 819, 9.1, 5, 2, 7, 3, 2),
-    "611": (611, "Rafa Silva", "POR", "MF", "Benfica", 29, 1993, 10, 10, 819, 9.1, 5, 2, 7, 5, 0),
-    "654": (654, "Mehdi Taremi", "IRN", "FW", "Porto", 30, 1992, 7, 7, 611, 6.8, 5, 2, 7, 3, 2),
-    "409": (409, "João Mário", "POR", "FW", "Benfica", 29, 1993, 10, 10, 861, 9.6, 6, 2, 8, 1, 5),
-    "318": (318, "Vinicius Júnior", "BRA", "FW", "Real Madrid", 22, 2000, 12, 11, 972, 10.8, 7, 6, 13, 7, 0),
-    "423": (423, "Kylian Mbappé", "FRA", "FW", "Paris S-G", 23, 1998, 8, 7, 651, 7.2, 7, 3, 10, 6, 1),
-    "585": (585, "Mohamed Salah", "EGY", "FW", "Liverpool", 30, 1992, 8, 7, 624, 6.9, 8, 2, 10, 7, 1)
+    0: (0, 2020, "MI", "FT", "Data Scientist", 70000, "EUR", 79833, "DE", 0, "DE", "L"),
+    1: (1, 2020, "SE", "FT", "Machine Learning Scientist", 260000, "USD", 260000, "JP", 0, "JP", "S"),
+    2: (2, 2020, "SE", "FT", "Big Data Engineer", 85000, "GBP", 109024, "GB", 50, "GB", "M"),
+    3: (3, 2020, "MI", "FT", "Product Data Analyst", 20000, "USD", 20000, "HN", 0, "HN", "S"),
+    4: (4, 2020, "SE", "FT", "Machine Learning Engineer", 150000, "USD", 150000, "US", 50, "US", "L"),
+    5: (5, 2020, "EN", "FT", "Data Analyst", 72000, "USD", 72000, "US", 100, "US", "L"),
+    6: (6, 2020, "SE", "FT", "Lead Data Scientist", 190000, "USD", 190000, "US", 100, "US", "S"),
+    7: (7, 2020, "MI", "FT", "Data Scientist", 11000000, "HUF", 35735, "HU", 50, "HU", "L"),
+    8: (8, 2020, "MI", "FT", "Business Data Analyst", 135000, "USD", 135000, "US", 100, "US", "L"),
+    9: (9, 2020, "SE", "FT", "Lead Data Engineer", 125000, "USD", 125000, "NZ", 50, "NZ", "S"),
+    10: (10, 2020, "EN", "FT", "Data Scientist", 45000, "EUR", 51321, "FR", 0, "FR", "S"),
+    11: (11, 2020, "MI", "FT", "Data Scientist", 3000000, "INR", 40481, "IN", 0, "IN", "L"),
+    12: (12, 2020, "EN", "FT", "Data Scientist", 35000, "EUR", 39916, "FR", 0, "FR", "M"),
+    13: (13, 2020, "MI", "FT", "Lead Data Analyst", 87000, "USD", 87000, "US", 100, "US", "L"),
+    14: (14, 2020, "MI", "FT", "Data Analyst", 85000, "USD", 85000, "US", 100, "US", "L"),
+    15: (15, 2020, "MI", "FT", "Data Analyst", 8000, "USD", 8000, "PK", 50, "PK", "L"),
+    16: (16, 2020, "EN", "FT", "Data Engineer", 4450000, "JPY", 41689, "JP", 100, "JP", "S"),
+    17: (17, 2020, "SE", "FT", "Big Data Engineer", 100000, "EUR", 114047, "PL", 100, "GB", "S"),
+    18: (18, 2020, "EN", "FT", "Data Science Consultant", 423000, "INR", 5707, "IN", 50, "IN", "M"),
+    19: (19, 2020, "MI", "FT", "Lead Data Engineer", 56000, "USD", 56000, "PT", 100, "US", "M"),
+    20: (20, 2020, "MI", "FT", "Machine Learning Engineer", 299000, "CNY", 43331, "CN", 0, "CN", "M")
 }
 
+def generar_salary_by_job(diccionario):
+    def reducer(acc, item): # acc es el acumulador
+        job_title = item[1][4] # item[1] es el valor del diccionario (una tupla) y item[1][4] es el título del trabajo
+        salary_in_usd = item[1][7] # item[1][7] es el salario en USD
+        if job_title in acc: # Si el trabajo ya está en el diccionario, se actualiza el contador y el salario total
+            count, total_salary = acc[job_title] # count es el número de trabajos y total_salary es el salario total
+            acc[job_title] = (count + 1, total_salary + salary_in_usd) # Se actualiza el diccionario
+        else:
+            acc[job_title] = (1, salary_in_usd) # Si el trabajo no está en el diccionario, se añade
+        return acc
 
-def goles_por_partido(dic):  # Diccionario por comprensión
-    return {k: (v[1], round(v[11] / v[7], 2)) if v[7] != 0 else (v[1], 0) for k, v in dic.items()}
+    return reduce(reducer, diccionario.items(), {}) # Se aplica la función reduce() al diccionario y se devuelve el resultado
 
+# Generar el diccionario salary_by_job
+salary_by_job = generar_salary_by_job(diccionario)
 
-goals_by_match = goles_por_partido(diccionario)
-# Tomamos el diccionario de la función anterior y usamos la función map() para
-# aplicar la función lambda (que muestra dos valores) a la colección goals_by_match.
-# Como resultado tenemos un objeto iterable, porque map() devuelve un iterable.
+# Calcular el salario promedio por trabajo y almacenarlo en un nuevo diccionario (diccionario por comprensión)
+avg_salary_by_job = {job: (job, total_salary / count) for job, (count, total_salary) in salary_by_job.items()}
+
+# Aplicar la función lambda a la colección avg_salary_by_job y mostrar los resultados
+# Como resultado, tenemos un objeto iterable, porque map() devuelve un iterable.
 print("Resultado de aplicar función map():")
-list(map(lambda item: print(item[0], item[1]), goals_by_match.items()))
+list(map(lambda item: print(f"{item[0]}: {item[1][1]:.2f} USD"), avg_salary_by_job.items()))
 
 
-# Calcula el promedio de goles por partido
-def promedio_goles(goals_by_match):
-    total_goles = reduce(lambda a, b: a + b[1], goals_by_match.values(), 0)
-    # En este caso, la función lambda a, b: a + b[1] toma dos argumentos, 'a' y 'b'. 
-    # Donde 'a'es el acumulador que mantiene el resultado parcial, y b es el elemento actual en la secuencia. 
-    # La función suma el segundo elemento de b (es decir, b[1]) al acumulador 'a'.
-    # El 0 proporciona un valor inicial para 'a', por lo que en la primera llamada a la función lambda, 'a'
-    # será 0 y b será el primer elemento en goals_by_match.values()
-    promedio = total_goles / len(goals_by_match)
+# Calcular el promedio de salario global
+def promedio_salario(avg_salary_by_job):
+    total_salarios = reduce(lambda a, b: a + b[1][1], avg_salary_by_job.items(), 0) # Se suman los salarios de todos los trabajos
+    promedio = total_salarios / len(avg_salary_by_job) # Se calcula el promedio
     print("\nResultado de aplicar función reduce():")
-    print("Promedio de goles por partido: ", promedio)
+    print(f"Promedio de salario global: {promedio:.2f} USD")
     return promedio
 
 
-promedio = promedio_goles(goals_by_match)
+promedio = promedio_salario(avg_salary_by_job)
 
-# Usamos la función filter() para obtener los jugadores con un promedio de goles por partido superior al promedio
+# Usamos la función filter() para obtener los trabajos con un salario superior al promedio
+trabajos_superiores_al_promedio = dict(filter(lambda item: item[1][1] > promedio, avg_salary_by_job.items()))
 
-jugadores_superiores_al_promedio = dict(filter(lambda item: item[1][1] > promedio, goals_by_match.items()))
-
-# Imprime los jugadores con un promedio de goles por partido superior al promedio
+# Imprime los trabajos con un salario superior al promedio
 print("\nResultado de aplicar función filter():")
-print("Jugadores con un promedio de goles por partido superior al promedio\n")
-print("Nombre               Promedio")
-for jugador in jugadores_superiores_al_promedio.values():
-    print("{:<22} {:<6}".format(*jugador))
+print("Trabajos con salario superior al promedio global\n")
+print("Cargo                         Salario Promedio (USD)")
+for trabajo in trabajos_superiores_al_promedio.values():
+    print(f"{trabajo[0]:<30} {trabajo[1]:.2f}")
